@@ -5,12 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.android.things.contrib.driver.adcv2x.Adcv2x;
 import com.google.android.things.pio.PeripheralManagerService;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import net.trippedout.android.thingswithfirebase.drivers.SparkfunADCV20;
 import net.trippedout.android.thingswithfirebase.listeners.SimpleValueListener;
 
 import java.io.IOException;
@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    float currentVoltage = 0.f;
 
     private void setupThings() {
         PeripheralManagerService manager = new PeripheralManagerService();
@@ -59,17 +60,26 @@ public class MainActivity extends AppCompatActivity {
         }
 
         try {
-            final SparkfunADCV20 adc = new SparkfunADCV20("I2C1");
+            final Adcv2x adc = new Adcv2x("I2C1");
+            adc.setRange(Adcv2x._4_096V);
+
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        Log.d(TAG, "channel: " + adc.getResult(0));
+                        float v = adc.getResult(0);
+                        float diff = currentVoltage - v;
+
+                        if(Math.abs(diff) > .01f) {
+                            Log.d(TAG, "voltage: " + v);
+
+                            currentVoltage = v;
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
 
-                    mHandler.postDelayed(this, 250);
+                    mHandler.postDelayed(this, 100);
                 }
             });
         } catch (IOException e) {

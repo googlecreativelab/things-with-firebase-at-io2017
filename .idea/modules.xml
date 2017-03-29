@@ -3,7 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ThingsWithFirebase.iml" filepath="$PROJECT_DIR$/ThingsWithFirebase.iml" />
+      <module fileurl="file://$PROJECT_DIR$/contrib-drivers/adcv2x/adcv2x.iml" filepath="$PROJECT_DIR$/contrib-drivers/adcv2x/adcv2x.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/contrib-drivers/contrib-drivers.iml" filepath="$PROJECT_DIR$/contrib-drivers/contrib-drivers.iml" />
+      <module fileurl="file://$PROJECT_DIR$/contrib-drivers/testingutils/testingutils.iml" filepath="$PROJECT_DIR$/contrib-drivers/testingutils/testingutils.iml" />
     </modules>
   </component>
 </project>

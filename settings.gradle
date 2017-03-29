@@ -1,1 +1,3 @@
 include ':app'
+include ':contrib-drivers:testingutils'
+include ':contrib-drivers:adcv2x'
