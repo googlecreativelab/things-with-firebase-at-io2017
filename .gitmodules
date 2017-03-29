@@ -1,0 +1,3 @@
+[submodule "contrib-drivers"]
+	path = contrib-drivers
+	url = https://github.com/trippedout/contrib-drivers.git
