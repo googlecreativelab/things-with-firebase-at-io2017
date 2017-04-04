@@ -27,6 +27,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.2.0'
 
     provided 'com.google.android.things:androidthings:0.2-devpreview'
+    compile 'com.google.android.things.contrib:driver-button:0.2'
     compile project(':contrib-drivers:adcv2x')
 
     testCompile 'junit:junit:4.12'
