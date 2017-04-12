@@ -1,20 +1,21 @@
 package net.trippedout.android.thingswithfirebase;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 
+import com.google.android.things.contrib.common.AnalogDevice;
 import com.google.android.things.contrib.driver.adcv2x.Adcv2x;
 import com.google.android.things.contrib.driver.button.Button;
+import com.google.android.things.pio.PeripheralManagerService;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import net.trippedout.android.thingswithfirebase.listeners.SimpleValueListener;
-
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,7 +48,9 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseDatabase mDatabase;
     private DatabaseReference mDialRef, mPrevRef, mNextRef;
     private Button mPrevButton, mNextButton;
-    private Adcv2x mAdc;
+
+    private List<AutoCloseable> mCloseableThings = new ArrayList<>();
+    private List<AnalogDevice> mAnalogDevices = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,22 +68,22 @@ public class MainActivity extends AppCompatActivity {
             if(mNextButton != null) {
                 mNextButton.close();
             }
-
-            if(mAdc != null) {
-                mAdc.close();
+            if(mPrevButton != null) {
+                mPrevButton.close();
             }
-        } catch (IOException e) {
+
+            if(mCloseableThings.size() > 0) {
+                for(AutoCloseable thing : mCloseableThings) {
+                    thing.close();
+                }
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void setupFirebase() {
-        //TODO auth doesnt work yet with Things
-//        mAuth = FirebaseAuth.getInstance();
-//        mAuth.signInAnonymously().addOnCompleteListener(this);
-
         mDatabase = FirebaseDatabase.getInstance();
-        mDialRef = mDatabase.getReference("things/dial");
         mPrevRef = mDatabase.getReference("things/prev");
         mNextRef = mDatabase.getReference("things/next");
     }
@@ -96,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
             mPrevButton.setOnButtonEventListener(new Button.OnButtonEventListener() {
                 @Override
                 public void onButtonEvent(Button button, boolean b) {
+                    Log.d(TAG, "mPrevButton pressed");
                     mPrevRef.setValue(b);
                 }
             });
@@ -104,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
             mNextButton.setOnButtonEventListener(new Button.OnButtonEventListener() {
                 @Override
                 public void onButtonEvent(Button button, boolean b) {
+                    Log.d(TAG, "mNextButton pressed");
                     mNextRef.setValue(b);
                 }
             });
@@ -114,26 +119,29 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupDial() {
         try {
-            // Create the driver for our ADC board, needed for the analog signal from our pot
-            mAdc = new Adcv2x("I2C1");
+            // Query which I2C buses are attached, but typically its only the default.
+            PeripheralManagerService peripheralManagerService = new PeripheralManagerService();
+            Log.d(TAG, "Available I2C Buses: " + peripheralManagerService.getI2cBusList());
 
-            // set the range here to 4 volts even tho we know we're only feeding it ~3.3
-            // the dial turned all the way up will read ~3.2
-            mAdc.setRange(Adcv2x._4_096V);
+            // Create the driver for the two ADC boards we've connected
+            final Adcv2x upperAdc = new Adcv2x(Adcv2x.DEFAULT_BUS, Adcv2x.I2C_ADDRESS_48);
+            final Adcv2x lowerAdc = new Adcv2x(Adcv2x.DEFAULT_BUS, Adcv2x.I2C_ADDRESS_49);
+            mCloseableThings.add(upperAdc);
+            mCloseableThings.add(lowerAdc);
+
+            // Add all our individual devices to our read array
+            mAnalogDevices.add(new AnalogDevice(upperAdc, 0, "speed"));
+            mAnalogDevices.add(new AnalogDevice(upperAdc, 1, "dieSpeed"));
+            mAnalogDevices.add(new AnalogDevice(lowerAdc, 1, "radius"));
+            mAnalogDevices.add(new AnalogDevice(lowerAdc, 2, "curlSize"));
+            mAnalogDevices.add(new AnalogDevice(lowerAdc, 3, "attraction"));
 
             // loop through reads
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        float v = mAdc.getResult(0);
-                        float diff = currentVoltage - v;
-
-                        // only update database if we're beyond the previous difference
-                        if(Math.abs(diff) > MIN_DIFFERENCE_IN_VOLTAGE) {
-                            currentVoltage = v;
-                            updateVoltageInDatabase(currentVoltage);
-                        }
+                        updateAnalogDevices();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -146,17 +154,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void updateVoltageInDatabase(float currentVoltage) {
-        float percentage = currentVoltage / MAX_VOLTAGE_FROM_POT;
-        if(percentage < 0.f) percentage = 0.f;
-        if(percentage > 1.f) percentage = 1.f;
+    private void updateAnalogDevices() throws IOException {
+        for(AnalogDevice device : mAnalogDevices) {
+            float v = device.update();
+            float diff = device.getCurrentVoltage() - v;
 
-        // This will work for testing since we have database open without auth <- BAD
-        mDialRef.setValue(percentage);
+            if(Math.abs(diff) > MIN_DIFFERENCE_IN_VOLTAGE) {
+                device.setVoltage(v);
+                updateVoltageInDatabase(device);
+            }
+        }
     }
 
-//    @Override
-//    public void onComplete(@NonNull Task<AuthResult> task) {
-//        Log.d(TAG,"onComplete: " + task.getResult());
-//    }
+    private void updateVoltageInDatabase(AnalogDevice device) {
+        Log.d(TAG, "updateVoltage: " + device);
+        mDatabase
+                .getReference("things/" + device.getName())
+                .setValue(device.getNormalized(MAX_VOLTAGE_FROM_POT));
+    }
 }
