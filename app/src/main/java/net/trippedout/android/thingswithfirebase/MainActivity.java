@@ -5,13 +5,14 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.google.android.things.contrib.common.AnalogDevice;
 import com.google.android.things.contrib.driver.adcv2x.Adcv2x;
 import com.google.android.things.contrib.driver.button.Button;
 import com.google.android.things.pio.PeripheralManagerService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import net.trippedout.android.thingswithfirebase.common.AdcWrapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mPrevButton, mNextButton;
 
     private List<AutoCloseable> mCloseableThings = new ArrayList<>();
-    private List<AnalogDevice> mAnalogDevices = new ArrayList<>();
+    private List<AdcWrapper> mAnalogDevices = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,11 +131,11 @@ public class MainActivity extends AppCompatActivity {
             mCloseableThings.add(lowerAdc);
 
             // Add all our individual devices to our read array
-            mAnalogDevices.add(new AnalogDevice(upperAdc, 0, "speed"));
-            mAnalogDevices.add(new AnalogDevice(upperAdc, 1, "dieSpeed"));
-            mAnalogDevices.add(new AnalogDevice(lowerAdc, 1, "radius"));
-            mAnalogDevices.add(new AnalogDevice(lowerAdc, 2, "curlSize"));
-            mAnalogDevices.add(new AnalogDevice(lowerAdc, 3, "attraction"));
+            mAnalogDevices.add(new AdcWrapper(upperAdc, 0, "speed"));
+            mAnalogDevices.add(new AdcWrapper(upperAdc, 1, "dieSpeed"));
+            mAnalogDevices.add(new AdcWrapper(lowerAdc, 1, "radius"));
+            mAnalogDevices.add(new AdcWrapper(lowerAdc, 2, "curlSize"));
+            mAnalogDevices.add(new AdcWrapper(lowerAdc, 3, "attraction"));
 
             // loop through reads
             mHandler.post(new Runnable() {
@@ -155,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateAnalogDevices() throws IOException {
-        for(AnalogDevice device : mAnalogDevices) {
+        for(AdcWrapper device : mAnalogDevices) {
             float v = device.update();
             float diff = device.getCurrentVoltage() - v;
 
@@ -166,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void updateVoltageInDatabase(AnalogDevice device) {
+    private void updateVoltageInDatabase(AdcWrapper device) {
         Log.d(TAG, "updateVoltage: " + device);
         mDatabase
                 .getReference("things/" + device.getName())
