@@ -26,13 +26,11 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.2.0'
 
-    provided 'com.google.android.things:androidthings:0.2-devpreview'
-    compile 'com.google.android.things.contrib:driver-button:0.2'
+    provided 'com.google.android.things:androidthings:0.3-devpreview'
     compile project(':contrib-drivers:adcv2x')
 
     testCompile 'junit:junit:4.12'
     compile 'com.google.firebase:firebase-database:10.2.0'
-    compile 'com.google.firebase:firebase-auth:10.2.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

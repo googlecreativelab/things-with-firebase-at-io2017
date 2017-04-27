@@ -6,13 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.google.android.things.contrib.driver.adcv2x.Adcv2x;
-import com.google.android.things.contrib.driver.button.Button;
 import com.google.android.things.pio.PeripheralManagerService;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import net.trippedout.android.thingswithfirebase.common.AdcWrapper;
+import net.trippedout.android.thingswithfirebase.util.AdcWrapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,14 +38,9 @@ public class MainActivity extends AppCompatActivity {
      */
     private static final float MAX_VOLTAGE_FROM_POT = 3.2f;
 
-    private float currentVoltage = 0.f;
-
     private Handler mHandler = new Handler();
 
-    private FirebaseAuth mAuth;
-    private FirebaseDatabase mDatabase;
-    private DatabaseReference mDialRef, mPrevRef, mNextRef;
-    private Button mPrevButton, mNextButton;
+    private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
 
     private List<AutoCloseable> mCloseableThings = new ArrayList<>();
     private List<AdcWrapper> mAnalogDevices = new ArrayList<>();
@@ -57,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setupFirebase();
         setupThings();
     }
 
@@ -66,13 +57,6 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
 
         try {
-            if(mNextButton != null) {
-                mNextButton.close();
-            }
-            if(mPrevButton != null) {
-                mPrevButton.close();
-            }
-
             if(mCloseableThings.size() > 0) {
                 for(AutoCloseable thing : mCloseableThings) {
                     thing.close();
@@ -83,42 +67,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setupFirebase() {
-        mDatabase = FirebaseDatabase.getInstance();
-        mPrevRef = mDatabase.getReference("things/prev");
-        mNextRef = mDatabase.getReference("things/next");
-    }
-
     private void setupThings() {
-        setupButtons();
-        setupDial();
-    }
-
-    private void setupButtons() {
-        try {
-            mPrevButton = new Button("GP14", Button.LogicState.PRESSED_WHEN_HIGH);
-            mPrevButton.setOnButtonEventListener(new Button.OnButtonEventListener() {
-                @Override
-                public void onButtonEvent(Button button, boolean b) {
-                    Log.d(TAG, "mPrevButton pressed");
-                    mPrevRef.setValue(b);
-                }
-            });
-
-            mNextButton = new Button("GP15", Button.LogicState.PRESSED_WHEN_HIGH);
-            mNextButton.setOnButtonEventListener(new Button.OnButtonEventListener() {
-                @Override
-                public void onButtonEvent(Button button, boolean b) {
-                    Log.d(TAG, "mNextButton pressed");
-                    mNextRef.setValue(b);
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void setupDial() {
         try {
             // Query which I2C buses are attached, but typically its only the default.
             PeripheralManagerService peripheralManagerService = new PeripheralManagerService();
