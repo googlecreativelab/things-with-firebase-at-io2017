@@ -68,40 +68,66 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupThings() {
-        try {
-            // Query which I2C buses are attached, but typically its only the default.
-            PeripheralManagerService peripheralManagerService = new PeripheralManagerService();
-            Log.d(TAG, "Available I2C Buses: " + peripheralManagerService.getI2cBusList());
+        // Query which I2C buses are attached, but typically its only the default.
+        // This is just for visibility, we get our devices below
+        PeripheralManagerService peripheralManagerService = new PeripheralManagerService();
+        Log.d(TAG, "Available I2C Buses: " + peripheralManagerService.getI2cBusList());
 
-            // Create the driver for the two ADC boards we've connected
+        // Handle the addition of all three boards separately, so different testing environments
+        // don't break the whole project. ie one of our devs only had the bottom board to work with
+        // Altho note - if a channel is open below and not connected to any sliders or dials, it
+        // will fluctuate wildly around 1.5v, sending constant updates to you FB database.
+        try {
             final Adcv2x upperAdc = new Adcv2x(Adcv2x.DEFAULT_BUS, Adcv2x.I2C_ADDRESS_48);
-            final Adcv2x lowerAdc = new Adcv2x(Adcv2x.DEFAULT_BUS, Adcv2x.I2C_ADDRESS_49);
             mCloseableThings.add(upperAdc);
+
+            mAnalogDevices.add(new AdcWrapper(upperAdc, 3, "curlSize"));
+            mAnalogDevices.add(new AdcWrapper(upperAdc, 2, "radius"));
+            mAnalogDevices.add(new AdcWrapper(upperAdc, 1, "dieSpeed"));
+            mAnalogDevices.add(new AdcWrapper(upperAdc, 0, "speed"));
+        } catch (IOException e) {
+            handleAdcIOException(e, "I2C_ADDRESS_48 : upper");
+        }
+
+        try {
+            final Adcv2x middleAdc = new Adcv2x(Adcv2x.DEFAULT_BUS, Adcv2x.I2C_ADDRESS_49);
+            mCloseableThings.add(middleAdc);
+
+            mAnalogDevices.add(new AdcWrapper(middleAdc, 2, "motionMultiplier"));
+            mAnalogDevices.add(new AdcWrapper(middleAdc, 0, "attraction"));
+        } catch (IOException e) {
+            handleAdcIOException(e, "I2C_ADDRESS_49 : middle");
+        }
+
+        try {
+            final Adcv2x lowerAdc = new Adcv2x(Adcv2x.DEFAULT_BUS, Adcv2x.I2C_ADDRESS_4A);
             mCloseableThings.add(lowerAdc);
 
-            // Add all our individual devices to our read array
-            mAnalogDevices.add(new AdcWrapper(upperAdc, 0, "speed"));
-            mAnalogDevices.add(new AdcWrapper(upperAdc, 1, "dieSpeed"));
-            mAnalogDevices.add(new AdcWrapper(lowerAdc, 1, "radius"));
-            mAnalogDevices.add(new AdcWrapper(lowerAdc, 2, "curlSize"));
-            mAnalogDevices.add(new AdcWrapper(lowerAdc, 3, "attraction"));
-
-            // loop through reads
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        updateAnalogDevices();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    mHandler.postDelayed(this, DELAY_CHECK_MS);
-                }
-            });
+            mAnalogDevices.add(new AdcWrapper(lowerAdc, 3, "shadowDarkness"));
+            mAnalogDevices.add(new AdcWrapper(lowerAdc, 2, "bgColor"));
+            mAnalogDevices.add(new AdcWrapper(lowerAdc, 1, "color1"));
+            mAnalogDevices.add(new AdcWrapper(lowerAdc, 0, "color2"));
         } catch (IOException e) {
-            e.printStackTrace();
+            handleAdcIOException(e, "I2C_ADDRESS_4A : lower");
         }
+
+        // loop through all available devices and read
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    updateAnalogDevices();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                mHandler.postDelayed(this, DELAY_CHECK_MS);
+            }
+        });
+    }
+
+    private void handleAdcIOException(IOException e, String which) {
+        Log.e(TAG, "handleAdcIOException on: " + which + " e: " + e.getMessage());
     }
 
     private void updateAnalogDevices() throws IOException {
