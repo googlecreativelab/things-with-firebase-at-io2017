@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
      * The amount of time between reading ADC on {@link Adcv2x} so we don't have to
      * update our database too much.
      */
-    private static final long DELAY_CHECK_MS = 250;
+    private static final long DELAY_CHECK_MS = 150;
 
     /**
      * So we don't constantly update the database, only update if it goes over a set amount.
