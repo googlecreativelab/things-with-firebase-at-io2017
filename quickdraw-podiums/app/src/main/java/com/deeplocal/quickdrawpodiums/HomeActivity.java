@@ -1,13 +1,10 @@
-package com.deeplocal.thingstest;
+package com.deeplocal.quickdrawpodiums;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.text.format.Formatter;
 import android.util.Log;
 
 import com.google.android.things.pio.Gpio;
-import com.google.android.things.pio.GpioCallback;
 import com.google.android.things.pio.PeripheralManagerService;
 
 import com.google.android.things.pio.UartDevice;
@@ -19,7 +16,6 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 

@@ -16,6 +16,9 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+
+        // for testing before actual jcenter publish
+        maven { url "http://google.bintray.com/androidthings" }
     }
 }
 

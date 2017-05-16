@@ -4,7 +4,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
-        applicationId "com.deeplocal.thingstest"
+        applicationId "com.deeplocal.quickdrawpodiums"
         minSdkVersion 24
         targetSdkVersion 25
         versionCode 1
@@ -29,7 +29,7 @@ dependencies {
     compile 'com.google.firebase:firebase-core:10.2.4'
     compile 'com.google.firebase:firebase-database:10.2.4'
     testCompile 'junit:junit:4.12'
-    provided 'com.google.android.things:androidthings:0.3-devpreview'
+    provided 'com.google.android.things:androidthings:0.4-devpreview'
 }
 
 apply plugin: 'com.google.gms.google-services'

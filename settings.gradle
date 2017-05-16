@@ -1,4 +1,2 @@
-include ':quickdraw-podiums'
+include ':quickdraw-podiums:app'
 include ':controller-app'
-include ':contrib-drivers:testingutils'
-include ':contrib-drivers:adcv2x'
