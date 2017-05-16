@@ -58,21 +58,16 @@ public class HomeActivity extends Activity {
             uart.setStopBits(1);
 
             //we have a few different refs here to make things easy, this can be streamlined            
-            DatabaseReference dbRef = database.getReference("deeplocal");
-            DatabaseReference stateRef = database.getReference("deeplocal/triggers/player" + whichPlayer + "/state");
-            final DatabaseReference ipRef = database.getReference("deeplocal/triggers/player" + whichPlayer + "/ip");
-            final DatabaseReference heartbeatRef = database.getReference("deeplocal/triggers/player" + whichPlayer + "/heartbeat");
+            DatabaseReference dbRef = database.getReference("io");
+            DatabaseReference stateRef = database.getReference("io/triggers/player" + whichPlayer + "/state");
+            final DatabaseReference ipRef = database.getReference("io/triggers/player" + whichPlayer + "/ip");
+            final DatabaseReference heartbeatRef = database.getReference("io/triggers/player" + whichPlayer + "/heartbeat");
 
             //update our UP and "heartbeat" on a timer.  This is just useful for debugging / making sure the Pi's are talking to 
             //firebase
-            Timer timer = new Timer();
-            timer.scheduleAtFixedRate(new TimerTask()
-            {
-                public void run()  {
-                    heartbeatRef.setValue(new Date());
-                    ipRef.setValue(deviceIP);
-                }
-            }, 0, 10000);
+            heartbeatRef.setValue(new Date());
+            ipRef.setValue(deviceIP);
+
               
             
             //set our initial value and start listening for firebase changes
@@ -96,7 +91,7 @@ public class HomeActivity extends Activity {
                         value = "Correct";
                     }
 
-                    //we only need to send the first letter to Firebase
+                    //we only need to send the first letter over serial
                     byte[] bytes = value.getBytes();
                     byte[] onebyte = new byte[1];
                     if (bytes.length > 0) {
