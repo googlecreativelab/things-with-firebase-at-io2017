@@ -47,7 +47,7 @@ public class AdcWrapper {
         if(mNormalized < 0.f) mNormalized = 0.f;
         if(mNormalized > 1.f) mNormalized = 1.f;
 
-        return mNormalized;
+        return 1.0f - mNormalized;
     }
 
     public Adcv2x getController() {
