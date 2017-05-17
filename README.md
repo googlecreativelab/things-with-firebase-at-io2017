@@ -13,7 +13,7 @@ Quick, Draw! multiplayer experience.
 The Spirit
 ---
 
-[insert i/o photo]
+![google i/o 2017](controller-app/imgs/spirit-1.jpg)
 
 The Spirit controls, located in [controller-app/](controller-app/), uses a newly 
 created driver for Android Things, the [ADCV2x analog controller](). It reads
