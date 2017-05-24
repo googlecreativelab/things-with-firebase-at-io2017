@@ -7,6 +7,6 @@ google-services.json.old
 /.idea/workspace.xml
 /.idea/libraries
 .DS_Store
-/build
+*build/
 /captures
 .externalNativeBuild

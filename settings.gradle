@@ -1,2 +1,2 @@
-include ':quickdraw-podiums:app'
+include ':quickdraw-podiums'
 include ':controller-app'

@@ -2,13 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ThingsWithFirebase.iml" filepath="$PROJECT_DIR$/ThingsWithFirebase.iml" />
-      <module fileurl="file://$PROJECT_DIR$/contrib-drivers/adcv2x/adcv2x.iml" filepath="$PROJECT_DIR$/contrib-drivers/adcv2x/adcv2x.iml" />
-      <module fileurl="file://$PROJECT_DIR$/quickdraw-podiums/app/app.iml" filepath="$PROJECT_DIR$/quickdraw-podiums/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/contrib-drivers/contrib-drivers.iml" filepath="$PROJECT_DIR$/contrib-drivers/contrib-drivers.iml" />
       <module fileurl="file://$PROJECT_DIR$/controller-app/controller-app.iml" filepath="$PROJECT_DIR$/controller-app/controller-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/quickdraw-podiums/quickdraw-podiums.iml" filepath="$PROJECT_DIR$/quickdraw-podiums/quickdraw-podiums.iml" />
-      <module fileurl="file://$PROJECT_DIR$/contrib-drivers/testingutils/testingutils.iml" filepath="$PROJECT_DIR$/contrib-drivers/testingutils/testingutils.iml" />
+      <module fileurl="file://$PROJECT_DIR$/things-with-firebase-at-io2017.iml" filepath="$PROJECT_DIR$/things-with-firebase-at-io2017.iml" />
     </modules>
   </component>
 </project>

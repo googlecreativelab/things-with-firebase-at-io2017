@@ -10,7 +10,6 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/controller-app" />
             <option value="$PROJECT_DIR$/quickdraw-podiums" />
-            <option value="$PROJECT_DIR$/quickdraw-podiums/app" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
