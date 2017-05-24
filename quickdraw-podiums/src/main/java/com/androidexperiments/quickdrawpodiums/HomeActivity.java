@@ -1,4 +1,4 @@
-package com.deeplocal.quickdrawpodiums;
+package com.androidexperiments.quickdrawpodiums;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -6,18 +6,19 @@ import android.util.Log;
 
 import com.google.android.things.pio.Gpio;
 import com.google.android.things.pio.PeripheralManagerService;
-
 import com.google.android.things.pio.UartDevice;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.*;
+import com.google.firebase.database.ValueEventListener;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 public class HomeActivity extends Activity {
