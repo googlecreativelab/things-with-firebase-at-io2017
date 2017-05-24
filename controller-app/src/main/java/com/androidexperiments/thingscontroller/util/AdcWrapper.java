@@ -1,4 +1,4 @@
-package net.trippedout.android.thingswithfirebase.util;
+package com.androidexperiments.thingscontroller.util;
 
 import com.google.android.things.contrib.driver.adcv2x.Adcv2x;
 

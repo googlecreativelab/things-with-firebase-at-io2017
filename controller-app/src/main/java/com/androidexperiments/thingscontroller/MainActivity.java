@@ -1,4 +1,4 @@
-package net.trippedout.android.thingswithfirebase;
+package com.androidexperiments.thingscontroller;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,7 +9,7 @@ import com.google.android.things.contrib.driver.adcv2x.Adcv2x;
 import com.google.android.things.pio.PeripheralManagerService;
 import com.google.firebase.database.FirebaseDatabase;
 
-import net.trippedout.android.thingswithfirebase.util.AdcWrapper;
+import com.androidexperiments.thingscontroller.util.AdcWrapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
