@@ -43,3 +43,7 @@ Realtime Database:
 
 ![firebase database](imgs/firebase.png)
 
+The slightly modified fork of [The Spirit](https://github.com/trippedout/The-Spirit/blob/master/src/index.js#L55) 
+then uses [dat.fire](https://github.com/googlecreativelab/dat.fire) to <i>automagically</i> update its 
+dat.gui interface with values being updated by this controller. 
+
