@@ -1,8 +1,6 @@
 Things &amp; Firebase
 ===
 
-[insert i/o photo]
-
 While building our Experiments Tent for Google I/O 2017, we realized that 
 on-screen controls were <i>so</i> 2016. 
 
@@ -31,7 +29,7 @@ Check out [controller-app/](controller-app/) for a more detailed look, and
 Quick, Draw! Multiplayer
 ---
 
-[insert i/o photo]
+![google i/o 2017](quickdraw-podiums/imgs/io-setup.jpg)
 
 The contestant podiums for Quick, Draw! function in the opposite direction.
  
