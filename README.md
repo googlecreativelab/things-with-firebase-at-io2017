@@ -23,8 +23,10 @@ To make it even easier for developers, we created a simple library named
 [dat.gui](https://github.com/dataarts/dat.gui) controllers to any Firebase database 
 in just a few lines of code. 
 
-Check out [controller-app/](controller-app/) for a more detailed look, and 
-[this commit to The Spirit where]() we implemented dat.fire.
+Check out [controller-app/](controller-app/) for a more detailed look, and look at this fork
+of The Spirit, [here](https://github.com/trippedout/The-Spirit/blob/master/src/index.js#L55) 
+and [here](https://github.com/trippedout/The-Spirit/blob/master/src/index.js#L185-L191), 
+where we implemented [dat.fire](https://github.com/googlecreativelab/dat.fire).
 
 Quick, Draw! Multiplayer
 ---
